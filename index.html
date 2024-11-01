@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Pixel Tracker</title>
+    <script>
+    // URL 파라미터 디코딩 함수
+    function decodeParameter(param) {
+        return param ? decodeURIComponent(param) : '';
+    }
+    
+    // URL 파라미터 파싱 함수
+    function getQueryParams() {
+        const params = new URLSearchParams(window.location.search);
+        return {
+            product_id: decodeParameter(params.get('product_id')),
+            name: decodeParameter(params.get('name')),
+            price: parseFloat(params.get('price') || '0'),
+            currency: decodeParameter(params.get('currency')) || 'KRW',
+            event: decodeParameter(params.get('event')) || 'AddToCart'
+        };
+    }
+
+    // Meta Pixel 초기화 및 이벤트 전송
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+
+    // 파라미터 가져오기 및 이벤트 전송
+    window.onload = function() {
+        const params = getQueryParams();
+        
+        fbq('init', '1895532120930304');
+        fbq('track', params.event, {
+            content_type: 'product',
+            content_ids: [params.product_id],
+            content_name: params.name,
+            currency: params.currency,
+            value: params.price
+        });
+    }
+    </script>
+    <style>
+        body { margin: 0; padding: 0; background: transparent; }
+        .pixel-image { width: 1px; height: 1px; opacity: 0.01; }
+    </style>
+</head>
+<body>
+    <img class="pixel-image" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="">
+    <noscript>
+        <img height="1" width="1" style="display:none" 
+             src="https://www.facebook.com/tr?id=1895532120930304&ev=AddToCart&noscript=1">
+    </noscript>
+</body>
+</html>
